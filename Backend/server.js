@@ -2,41 +2,34 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
+import mainRoutes from './routes/index.js';  
+import { errorHandler } from './middleware/errorMiddleware.js';
 
 // Load .env config
 dotenv.config();
 
 const app = express();
 
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 
 // Connect to MongoDB
 connectDB();
 
-// Import Routes
-import userRoutes from "./routes/userRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js";
+// Centralized Routes
+app.use('/api', mainRoutes);
 
-// Use Routes
-app.use("/api/users", userRoutes);
-app.use("/api/admin", adminRoutes);
-
-// 404 Error Handling
-app.use((req, res) => {
+// 404 Not Found Handler (For unmatched routes)
+app.use((req, res, next) => {
   res.status(404).json({ message: "Route Not Found" });
 });
 
+// Global Error Handler 
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Server Started at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
-
-
-
-
-
-
-
-
-

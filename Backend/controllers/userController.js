@@ -9,9 +9,9 @@ const generateToken = (id) => {
   });
 };
 
-//  User Signup
+// User Signup
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -19,11 +19,15 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const user = await User.create({ name, email, password }); // Password will auto-hash from pre-save middleware
+    const user = await User.create({
+      name,
+      email,
+      password, // auto-hashed
+      role: role || 'buyer',
+    });
 
     const token = generateToken(user._id);
 
-    // Set JWT Cookie
     res.cookie('jwt', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -60,12 +64,25 @@ export const loginUser = async (req, res) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
+      // 🎉 Role-based welcome message
+      let welcomeMessage = '';
+      switch (user.role) {
+        case 'admin':
+          welcomeMessage = 'Welcome, Admin!';
+          break;
+        case 'seller':
+          welcomeMessage = 'Welcome, Seller!';
+          break;
+        default:
+          welcomeMessage = 'Welcome!';
+      }
+
       res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        token,
+        message: welcomeMessage,
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
