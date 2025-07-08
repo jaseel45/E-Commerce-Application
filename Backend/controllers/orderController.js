@@ -1,35 +1,58 @@
 import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
 
 // Create New Order
 export const createOrder = async (req, res) => {
   const { orderItems, shippingAddress, paymentMethod, totalPrice } = req.body;
 
-  if (orderItems && orderItems.length === 0) {
+  if (!orderItems || orderItems.length === 0) {
     return res.status(400).json({ message: 'No order items' });
   }
 
   try {
+    // Fetch required product fields for each item
+    const detailedOrderItems = await Promise.all(
+      orderItems.map(async (item) => {
+        const product = await Product.findById(item.product);
+
+        if (!product) {
+          throw new Error(`Product not found: ${item.product}`);
+        }
+
+        return {
+          name: product.name,
+          price: product.price,
+          seller: product.seller, // Ensure this exists in product model
+          product: product._id,
+          quantity: item.quantity,
+        };
+      })
+    );
+
+    // Create order
     const order = new Order({
       user: req.user._id,
-      orderItems,
+      orderItems: detailedOrderItems,
       shippingAddress,
       paymentMethod,
       totalPrice,
     });
+
     const createdOrder = await order.save();
     res.status(201).json(createdOrder);
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    console.error(error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
-// Get Logged-in User Orders
+// Get Logged-in User's Orders
 export const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id });
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
@@ -44,7 +67,7 @@ export const getOrderById = async (req, res) => {
       res.status(404).json({ message: 'Order not found' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
@@ -54,7 +77,7 @@ export const getAllOrders = async (req, res) => {
     const orders = await Order.find({});
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
@@ -71,6 +94,6 @@ export const updateOrderStatus = async (req, res) => {
       res.status(404).json({ message: 'Order not found' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
