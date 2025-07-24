@@ -1,17 +1,32 @@
 import express from 'express';
-import { loginAdmin, getAdminProfile, logoutAdmin } from '../controllers/adminController.js';
-import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import {
+  loginAdmin,
+  getAdminProfile,
+  updateAdminProfile,
+  logoutAdmin,
+  getAllUsers,
+  deleteUser,
+} from '../controllers/adminController.js';
+
+import { protect, adminOnly } from '../middleware/authMiddleware.js'; 
+
 
 const router = express.Router();
 
-// Admin Login Route 
+// Admin Authentication
 router.post('/login', loginAdmin);
+router.post('/logout', logoutAdmin);
 
-// Admin Profile Route
-// Only accessible for authenticated users with admin role
 router.get('/profile', protect, adminOnly, getAdminProfile);
+router.put('/profile', protect, adminOnly, updateAdminProfile);
 
-// Admin Logout Route
-router.post('/logout', protect, adminOnly, logoutAdmin);
+// Admin - Manage Users
+router.get('/users', protect, adminOnly, getAllUsers);
+router.delete('/users/:id', protect, adminOnly, deleteUser);
 
 export default router;
+
+
+
+
+

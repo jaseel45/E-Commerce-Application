@@ -1,3 +1,4 @@
+// models/orderModel.js
 import mongoose from 'mongoose';
 
 const orderItemSchema = mongoose.Schema(
@@ -16,9 +17,7 @@ const orderItemSchema = mongoose.Schema(
       required: true,
     },
   },
-  {
-    _id: false,
-  }
+  { _id: false }
 );
 
 const orderSchema = mongoose.Schema(
@@ -33,17 +32,10 @@ const orderSchema = mongoose.Schema(
       address: { type: String, required: true },
       city: { type: String, required: true },
       postalCode: { type: String, required: true },
-      country: { type: String, required: true },
+      nearby: { type: String, required: true },
     },
-    paymentMethod: {
-      type: String,
-      required: true,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
+    paymentMethod: { type: String, required: true },
+    totalPrice: { type: Number, required: true, default: 0.0 },
     status: {
       type: String,
       enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
@@ -56,5 +48,4 @@ const orderSchema = mongoose.Schema(
 );
 
 const Order = mongoose.model('Order', orderSchema);
-
 export default Order;

@@ -6,7 +6,9 @@ import {
   getUserProfile,
   updateUserProfile,
   deleteUser,
-  checkUserRole
+  checkUserRole,
+  forgotPassword,
+  resetPassword
 } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -33,9 +35,14 @@ router.delete('/delete', protect, deleteUser);
 // Check User Role 
 router.get('/check-role', protect, checkUserRole);
 
+// Forgot Password
+router.post('/forgot-password', forgotPassword);
+
+// Reset Password
+router.post('/reset-password/:token', resetPassword);
+
+
+
 export default router;
-
-
-
 
 

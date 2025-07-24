@@ -1,5 +1,4 @@
 // models/productModel.js
-
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema(
@@ -35,12 +34,21 @@ const productSchema = new mongoose.Schema(
     ],
     seller: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Reference to the User model
+      ref: 'User',
       required: true,
+    },
+
+    rating: {
+      type: Number,
+      default: 0,
+    },
+    numReviews: {
+      type: Number,
+      default: 0,
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 

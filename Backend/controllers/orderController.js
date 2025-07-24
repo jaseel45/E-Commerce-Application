@@ -1,3 +1,4 @@
+// controllers/orderController.js
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 
@@ -10,11 +11,9 @@ export const createOrder = async (req, res) => {
   }
 
   try {
-    // Fetch required product fields for each item
     const detailedOrderItems = await Promise.all(
       orderItems.map(async (item) => {
         const product = await Product.findById(item.product);
-
         if (!product) {
           throw new Error(`Product not found: ${item.product}`);
         }
@@ -22,14 +21,13 @@ export const createOrder = async (req, res) => {
         return {
           name: product.name,
           price: product.price,
-          seller: product.seller, // Ensure this exists in product model
+          seller: product.seller,
           product: product._id,
           quantity: item.quantity,
         };
       })
     );
 
-    // Create order
     const order = new Order({
       user: req.user._id,
       orderItems: detailedOrderItems,
@@ -41,26 +39,26 @@ export const createOrder = async (req, res) => {
     const createdOrder = await order.save();
     res.status(201).json(createdOrder);
   } catch (error) {
-    console.error(error);
+    console.error("Create Order Error:", error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
-// Get Logged-in User's Orders
+//  Fetch Logged-in User's Orders
 export const getMyOrders = async (req, res) => {
   try {
+    console.log("Fetching orders for user:", req.user._id); // Debug
     const orders = await Order.find({ user: req.user._id });
     res.json(orders);
   } catch (error) {
+    console.error("Get My Orders Error:", error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
-// Get Order by ID
 export const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-
     if (order) {
       res.json(order);
     } else {
@@ -71,7 +69,6 @@ export const getOrderById = async (req, res) => {
   }
 };
 
-// Admin: Get All Orders
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find({});
@@ -81,11 +78,9 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
-// Admin: Update Order Status
 export const updateOrderStatus = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-
     if (order) {
       order.status = req.body.status || order.status;
       const updatedOrder = await order.save();

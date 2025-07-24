@@ -14,7 +14,7 @@ const cartItemSchema = mongoose.Schema(
     },
   },
   {
-    _id: false,  // No separate _id for each cart item
+    _id: false, 
   }
 );
 

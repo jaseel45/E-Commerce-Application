@@ -47,24 +47,30 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// Update Product
+// Update Product (with ownership check)
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
-    if (product) {
-      product.name = req.body.name || product.name;
-      product.description = req.body.description || product.description;
-      product.price = req.body.price || product.price;
-      product.category = req.body.category || product.category;
-      product.stock = req.body.stock || product.stock;
-      product.images = req.body.images || product.images;
-
-      const updatedProduct = await product.save();
-      res.json(updatedProduct);
-    } else {
-      res.status(404).json({ message: 'Product not found' });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
+
+    // Check if current user is the seller
+    if (product.seller.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to update this product' });
+    }
+
+    
+    product.name = req.body.name || product.name;
+    product.description = req.body.description || product.description;
+    product.price = req.body.price || product.price;
+    product.category = req.body.category || product.category;
+    product.stock = req.body.stock || product.stock;
+    product.images = req.body.images || product.images;
+
+    const updatedProduct = await product.save();
+    res.json(updatedProduct);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }

@@ -1,3 +1,4 @@
+// routes/orderRoutes.js
 import express from 'express';
 import {
   createOrder,
@@ -13,7 +14,7 @@ const router = express.Router();
 // Create New Order (User)
 router.post('/', protect, createOrder);
 
-// Get My Orders (User)
+// Path for logged-in user's orders
 router.get('/myorders', protect, getMyOrders);
 
 // Get Single Order by ID (User/Admin)
