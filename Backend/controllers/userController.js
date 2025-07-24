@@ -54,12 +54,20 @@ export const loginUser = async (req, res) => {
     if (user && (await user.matchPassword(password))) {
       const token = generateToken(user._id);
 
+      // res.cookie('jwt', token, {
+      //   httpOnly: true,
+      //   secure: false,
+      //   sameSite: 'none',
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      // });
+
       res.cookie('jwt', token, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'none',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
+
 
 
       let welcomeMessage = '';
