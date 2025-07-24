@@ -62,10 +62,10 @@ export const loginUser = async (req, res) => {
       // });
 
       res.cookie('jwt', token, {
-          httpOnly: true,
-          secure: false, // only for local testing
-          sameSite: 'lax', // 'none' + secure: false won't work
-          maxAge: 30 * 24 * 60 * 60 * 1000
+        httpOnly: true,
+        secure: true,           // must be true with SameSite=None
+        sameSite: 'None',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
 
