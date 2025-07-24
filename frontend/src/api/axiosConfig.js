@@ -14,10 +14,15 @@ const API = axios.create({
   withCredentials: true,
 });
 
+
 // Request interceptor to attach JWT token from cookie
 API.interceptors.request.use(
   (config) => {
     const token = getCookie('jwt');
+
+    console.log("token", token, document.cookie)
+    console.log("ALL COOKS",  document.cookie)
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
