@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API from '../api/axiosConfig';
 
 function EditProduct() {
   const { id } = useParams();
@@ -21,7 +22,7 @@ function EditProduct() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`, {
+        const res = await API.get(`/api/products/${id}`, {
           withCredentials: true,
         });
         const product = res.data;
@@ -61,7 +62,7 @@ function EditProduct() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5000/api/products/${id}`, formData, {
+      await API.put(`/api/products/${id}`, formData, {
         withCredentials: true,
       });
       alert('Product updated!');

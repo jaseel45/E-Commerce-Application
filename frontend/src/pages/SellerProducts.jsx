@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BadgeCheck, AlertTriangle } from 'lucide-react';
+import API from '../api/axiosConfig';
 
 function SellerProducts() {
   const [products, setProducts] = useState([]);
@@ -12,7 +13,7 @@ function SellerProducts() {
   useEffect(() => {
     const fetchSellerProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products/mine', {
+        const res = await API.get('/api/products/mine', {
           withCredentials: true,
         });
         setProducts(res.data);

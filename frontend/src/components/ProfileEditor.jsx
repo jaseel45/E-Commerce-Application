@@ -1,7 +1,7 @@
 // src/components/ProfileEditor.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
+import API from '../api/axiosConfig';
 
 function ProfileEditor() {
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ function ProfileEditor() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/users/profile', {
+        const res = await API.get('/api/users/profile', {
           withCredentials: true,
         });
         setFormData((prev) => ({
@@ -45,8 +45,8 @@ function ProfileEditor() {
     setLoading(true);
     setMessage('');
     try {
-      await axios.put(
-        'http://localhost:5000/api/users/profile',
+      await API.put(
+        '/api/users/profile',
         {
           name: formData.name,
           email: formData.email,

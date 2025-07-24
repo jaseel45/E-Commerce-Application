@@ -4,6 +4,7 @@ import axios from '../../axiosConfig';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { Trash2, Loader2 } from 'lucide-react';
+import API from '../api/axiosConfig';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -13,7 +14,7 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('/api/admin/users');
+      const res = await API.get('/api/admin/users');
       setUsers(res.data);
     } catch (err) {
       setError('Failed to fetch users');
@@ -28,7 +29,7 @@ const AdminUsers = () => {
 
     setDeletingUserId(userId);
     try {
-      await axios.delete(`/api/admin/users/${userId}`);
+      await API.delete(`/api/admin/users/${userId}`);
       toast.success('User deleted successfully');
       setUsers((prev) => prev.filter((u) => u._id !== userId));
     } catch (err) {

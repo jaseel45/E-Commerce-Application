@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import API from '../api/axiosConfig';
 
 function SellerRegister() {
   const [formData, setFormData] = useState({
@@ -44,8 +45,8 @@ function SellerRegister() {
 
     setLoading(true);
     try {
-      await axios.post(
-        'http://localhost:5000/api/seller/signup',
+      await API.post(
+        '/api/seller/signup',
         {
           name: username,
           email,

@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import API from "../api/axiosConfig";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/admin/logout");
+      await API.post("/api/admin/logout");
       document.cookie = "token=; Max-Age=0";
       navigate("/");
     } catch (err) {
@@ -42,7 +43,7 @@ const AdminDashboard = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get("/api/admin/profile");
+      const res = await API.get("/api/admin/profile");
       setAdmin(res.data);
       setFormData({ name: res.data.name, email: res.data.email, password: "" });
     } catch (err) {
@@ -52,7 +53,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("/api/admin/users");
+      const res = await API.get("/api/admin/users");
       setUsers(res.data);
     } catch (err) {
       toast.error("Failed to load users");
@@ -63,7 +64,7 @@ const AdminDashboard = () => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
       setDeletingUserId(id);
-      await axios.delete(`/api/admin/users/${id}`);
+      await API.delete(`/api/admin/users/${id}`);
       toast.success("User deleted");
       setUsers((prev) => prev.filter((u) => u._id !== id));
     } catch (err) {
@@ -75,7 +76,7 @@ const AdminDashboard = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("/api/orders");
+      const res = await API.get("/api/orders");
       setOrders(res.data);
     } catch (err) {
       toast.error("Failed to load orders");
@@ -84,7 +85,7 @@ const AdminDashboard = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("/api/products");
+      const res = await API.get("/api/products");
       setProducts(res.data);
     } catch (err) {
       toast.error("Failed to load products");
@@ -110,7 +111,7 @@ const AdminDashboard = () => {
       const payload = { name, email };
       if (password) payload.password = password;
 
-      const res = await axios.put("/api/admin/profile", payload);
+      const res = await API.put("/api/admin/profile", payload);
       setAdmin(res.data);
       toast.success("Profile updated!");
       setMessage("Profile updated successfully");

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import API from '../api/axiosConfig';
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -31,7 +32,7 @@ function Login() {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', formData, {
+      const res = await API.post('/api/users/login', formData, {
         withCredentials: true,
       });
 

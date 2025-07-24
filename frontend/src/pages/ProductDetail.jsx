@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import API from '../api/axiosConfig';
 
 function ProductDetail() {
   const { id } = useParams();
@@ -13,7 +14,7 @@ function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const res = await API.get(`/api/products/${id}`);
         setProduct(res.data);
       } catch (err) {
         setMessage('Failed to load product.');
@@ -25,8 +26,8 @@ function ProductDetail() {
 
   const handleAddToCart = async () => {
     try {
-      await axios.post(
-        'http://localhost:5000/api/cart/add',
+      await API.post(
+        '/api/cart/add',
         { productId: id, quantity: Number(quantity) },
         { withCredentials: true }
       );

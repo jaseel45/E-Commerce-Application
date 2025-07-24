@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API from '../api/axiosConfig';
 
 function AddProduct() {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ function AddProduct() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/products', formData, {
+      await API.post('/api/products', formData, {
         withCredentials: true,
       });
       setSuccess(true);

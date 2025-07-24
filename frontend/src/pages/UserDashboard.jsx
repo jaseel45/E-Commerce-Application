@@ -172,7 +172,7 @@ export default UserDashboard;
 
 //   const fetchUser = async () => {
 //     try {
-//       const res = await axios.get("http://localhost:5000/api/users/profile", {
+//       const res = await axios.get("/api/users/profile", {
 //         withCredentials: true,
 //       });
 //       setUser(res.data);
@@ -187,7 +187,7 @@ export default UserDashboard;
 
 //   const handleLogout = async () => {
 //     try {
-//       await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
+//       await axios.post("/api/users/logout", {}, { withCredentials: true });
 //       navigate("/");
 //     } catch (err) {
 //       console.error("Logout failed:", err);

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import API from '../api/axiosConfig';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ function ForgotPassword() {
     e.preventDefault();
 
     try {
-      const res = await axios.post('http://localhost:5000/api/users/forgot-password', { email });
+      const res = await API.post('/api/users/forgot-password', { email });
       toast.success(res.data.message || 'Password reset link sent!');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Something went wrong');

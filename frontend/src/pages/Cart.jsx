@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import API from '../api/axiosConfig';
 
 function Cart() {
   const [cart, setCart] = useState(null);
@@ -12,7 +13,7 @@ function Cart() {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/cart', {
+        const res = await API.get('/api/cart', {
           withCredentials: true,
         });
         setCart(res.data);
@@ -28,7 +29,7 @@ function Cart() {
 
   const handleRemove = async (productId) => {
   try {
-    await axios.delete(`http://localhost:5000/api/cart/${productId}`, {
+    await API.delete(`/api/cart/${productId}`, {
       withCredentials: true,
     });
 
@@ -47,8 +48,8 @@ function Cart() {
     if (newQuantity < 1) return;
 
     try {
-      const res = await axios.put(
-        `http://localhost:5000/api/cart/${productId}`,
+      const res = await API.put(
+        `/api/cart/${productId}`,
         { quantity: newQuantity },
         { withCredentials: true }
       );

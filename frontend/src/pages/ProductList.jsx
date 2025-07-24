@@ -1,6 +1,7 @@
 // src/pages/ProductList.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API from '../api/axiosConfig';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -9,7 +10,7 @@ function ProductList() {
     // Fetch all products from backend
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products');
+        const res = await API.get('/api/products');
         setProducts(res.data);
       } catch (error) {
         console.error('Failed to load products:', error.message);

@@ -6,6 +6,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import API from '../api/axiosConfig';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -45,8 +46,8 @@ function Register() {
 
     setLoading(true);
     try {
-      await axios.post(
-        'http://localhost:5000/api/users/signup',
+      await API.post(
+        '/api/users/signup',
         { name, email, password },
         { withCredentials: true }
       );

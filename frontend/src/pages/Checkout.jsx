@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import API from '../api/axiosConfig';
 
 function Checkout() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function Checkout() {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/cart', {
+        const res = await API.get('/api/cart', {
           withCredentials: true,
         });
         setCart(res.data);
@@ -64,8 +65,8 @@ function Checkout() {
         0
       );
 
-      await axios.post(
-        'http://localhost:5000/api/orders',
+      await API.post(
+        '/api/orders',
         {
           orderItems,
           shippingAddress,
@@ -75,7 +76,7 @@ function Checkout() {
         { withCredentials: true }
       );
 
-      await axios.delete('http://localhost:5000/api/cart', {
+      await API.delete('/api/cart', {
         withCredentials: true,
       });
 

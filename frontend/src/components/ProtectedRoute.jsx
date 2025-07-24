@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/axiosConfig';
 
 function ProtectedRoute({ children, allowedRoles }) {
   const [authStatus, setAuthStatus] = React.useState(null); 
@@ -8,7 +8,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   React.useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/users/profile', {
+        const res = await API.get('/api/users/profile', {
           withCredentials: true,
         });
         const userRole = res.data.role;
