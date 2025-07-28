@@ -1,132 +1,115 @@
 // src/pages/AddProduct.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
+import { toast } from 'react-toastify';
 
-function AddProduct() {
-  const navigate = useNavigate();
-
+function AddProduct({ onProductAdded }) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
     category: '',
     stock: '',
-    images: [''], 
+    images: [''],
   });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    // Handle images separately
-    if (name === 'image') {
-      setFormData((prev) => ({
-        ...prev,
-        images: [value],
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const data = new FormData();
+    data.append('file', file);
+    data.append('upload_preset', 'ecommerce_preset'); 
+    data.append('cloud_name', 'dyy4gxz8v');           
+
+    setUploading(true);
+    try {
+      const res = await fetch('https://api.cloudinary.com/v1_1/dyy4gxz8v/image/upload', {
+        method: 'POST',
+        body: data,
+      });
+      const result = await res.json();
+      setFormData((prev) => ({ ...prev, images: [result.secure_url] }));
+      toast.success('Image uploaded!');
+    } catch (err) {
+      toast.error('Image upload failed.');
+    } finally {
+      setUploading(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, description, price, category, stock, images } = formData;
-
+    const { name, price, category, stock, images } = formData;
     if (!name || !price || !category || !stock || images.length === 0 || !images[0]) {
-      setError('Please fill all required fields including image URL.');
+      setFormError('Please fill all required fields and upload an image.');
       return;
     }
 
     try {
-      await API.post('/api/products', formData, {
-        withCredentials: true,
-      });
-      setSuccess(true);
-      navigate('/seller-products');
+      await API.post('/api/products', formData);
+      toast.success('Product added!');
+      setFormData({ name: '', description: '', price: '', category: '', stock: '', images: [''] });
+      onProductAdded();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add product.');
+      setFormError(err.response?.data?.message || 'Failed to add product.');
     }
   };
 
   return (
-    <div className="min-h-screen bg-pink-50 flex items-center justify-center px-4">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-xl">
-        <h2 className="text-2xl font-bold text-center text-rose-600 mb-4">Add New Product</h2>
+    <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-md">
+      <h2 className="text-xl font-bold text-rose-600 mb-4 text-center">Add Product</h2>
+      {formError && <p className="text-red-500 text-sm mb-2 text-center">{formError}</p>}
 
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        {success && <p className="text-green-600 text-center mb-4">Product added successfully!</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {['name', 'description', 'price', 'category', 'stock'].map((field) => (
           <input
-            type="text"
-            name="name"
-            placeholder="Product Name"
-            value={formData.name}
+            key={field}
+            type={field === 'description' ? 'textarea' : field === 'price' || field === 'stock' ? 'number' : 'text'}
+            name={field}
+            placeholder={field[0].toUpperCase() + field.slice(1)}
+            value={formData[field]}
             onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
+            className="w-full p-2 border rounded"
           />
+        ))}
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={3}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
-          ></textarea>
-
+        {/* Image Upload Section */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Upload Product Image</label>
           <input
-            type="number"
-            name="price"
-            placeholder="Price"
-            value={formData.price}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="block w-full text-sm text-gray-700
+                       file:mr-4 file:py-2 file:px-4
+                       file:rounded-full file:border-0
+                       file:text-sm file:font-semibold
+                       file:bg-rose-50 file:text-rose-600
+                       hover:file:bg-rose-100"
           />
+          {uploading && <p className="text-sm text-gray-500 mt-1">Uploading image...</p>}
+          {formData.images[0] && (
+            <img
+              src={formData.images[0]}
+              alt="Preview"
+              className="mt-3 w-full h-40 object-cover rounded shadow"
+            />
+          )}
+        </div>
 
-          <input
-            type="text"
-            name="category"
-            placeholder="Category"
-            value={formData.category}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
-          />
-
-          <input
-            type="number"
-            name="stock"
-            placeholder="Stock"
-            value={formData.stock}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
-          />
-
-          <input
-            type="text"
-            name="image"
-            placeholder="Image URL"
-            value={formData.images[0]}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
-          />
-
-          <button
-            type="submit"
-            className="w-full bg-rose-500 text-white py-3 rounded hover:bg-rose-600 transition-all font-semibold"
-          >
+        <button type="submit" className="w-full bg-rose-500 text-white py-2 rounded hover:bg-rose-600">
           Add Product
-          </button>
-        </form>
-      </div>
+        </button>
+      </form>
     </div>
   );
 }
