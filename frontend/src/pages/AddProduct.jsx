@@ -91,10 +91,10 @@ function AddProduct({ onProductAdded }) {
           className="w-full p-2 border rounded text-gray-700"
         >
           <option value="">Select Category</option>
-          <option value="Skincare">Skincare</option>
+          <option value="Skincare">Skin Care</option>
           <option value="Face Care">Face Care</option>
           <option value="Beauty">Beauty</option>
-          <option value="Haircare">Haircare</option>
+          <option value="Haircare">Hair Care</option>
         </select>
 
         {/* Image Upload Section */}
