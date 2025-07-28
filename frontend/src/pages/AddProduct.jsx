@@ -27,8 +27,8 @@ function AddProduct({ onProductAdded }) {
 
     const data = new FormData();
     data.append('file', file);
-    data.append('upload_preset', 'ecommerce_preset'); 
-    data.append('cloud_name', 'dyy4gxz8v');           
+    data.append('upload_preset', 'ecommerce_preset');
+    data.append('cloud_name', 'dyy4gxz8v');
 
     setUploading(true);
     try {
@@ -70,7 +70,8 @@ function AddProduct({ onProductAdded }) {
       {formError && <p className="text-red-500 text-sm mb-2 text-center">{formError}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {['name', 'description', 'price', 'category', 'stock'].map((field) => (
+        {/* Name, Description, Price, Stock */}
+        {['name', 'description', 'price', 'stock'].map((field) => (
           <input
             key={field}
             type={field === 'description' ? 'textarea' : field === 'price' || field === 'stock' ? 'number' : 'text'}
@@ -81,6 +82,20 @@ function AddProduct({ onProductAdded }) {
             className="w-full p-2 border rounded"
           />
         ))}
+
+        {/* Dropdown for Category */}
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className="w-full p-2 border rounded text-gray-700"
+        >
+          <option value="">Select Category</option>
+          <option value="Skincare">Skincare</option>
+          <option value="Face Care">Face Care</option>
+          <option value="Beauty">Beauty</option>
+          <option value="Haircare">Haircare</option>
+        </select>
 
         {/* Image Upload Section */}
         <div>
